@@ -12,7 +12,7 @@ const fs = __nccwpck_require__(747);
 const token = core.getInput("token");
 const minCoverage = parseFloat(core.getInput("min-Coverage") || "0.0");
 
-const statsfile = "omegat/project-stats.txt";
+const statsfile = "omegat/project_stats.txt";
 
 function parse(data, line) {
     return parseInt(data.split("\n")[line].split("\t")[1]);
