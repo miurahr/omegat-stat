@@ -1,4 +1,4 @@
-name: 'OmegaT-statistics-report'
+name: 'omegat-stat'
 description: 'Report translation stats of OmegaT team project'
 branding:
   icon: 'book-open'
