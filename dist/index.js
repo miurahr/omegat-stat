@@ -26,6 +26,7 @@ async function run() {
         sourceCountWOD: 0,
         targetCountWOD: 0,
         summary: "",
+        detail: "",
         coverage: 0,
     };
 
@@ -37,6 +38,7 @@ async function run() {
         statistics.targetCountWOD = parse(data, 7);
         statistics.coverage = statistics.targetCountWOD / statistics.sourceCountWOD * 100
         statistics.summary = ` - " translated ${statistics.targetCountWOD} of ${statistics.sourceCountWOD}: total ${statistics.coverage}% w/o duplication.`;
+        statistics.detail = data.split("\n\n")[1];
         core.info(statistics.summary);
         core.setOutput('coverage', statistics.coverage.toString());
     } catch (error) {
@@ -62,7 +64,7 @@ async function run() {
             output: {
                 title: `${statistics.coverage.toFixed(0)}% coverage.`,
                 summary: statistics.summary + `, min-coverage: ${minCoverage}%`,
-                text: data,
+                text: statistics.detail,
             },
         });
     }
