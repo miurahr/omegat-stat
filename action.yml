@@ -1,5 +1,8 @@
 name: 'OmegaT-statistics-report'
 description: 'Report translation stats of OmegaT team project'
+branding:
+  icon: 'book-open'
+  color: 'green'
 inputs:
   token:
     description: "GitHub Secret Token; if not given the check result is not attached to the commit."
