@@ -31,6 +31,6 @@
     "@vercel/ncc": "^0.26.2",
     "eslint": "^7.4.0",
     "jest": "^26.1.0",
-    "node-notifier": ">=8.0.1",
+    "node-notifier": ">=8.0.1"
   }
 }
