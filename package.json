@@ -30,6 +30,7 @@
   "devDependencies": {
     "@vercel/ncc": "^0.25.1",
     "eslint": "^7.4.0",
-    "jest": "^26.1.0"
+    "jest": "^26.1.0",
+    "node-notifier": ">=8.0.1",
   }
 }
