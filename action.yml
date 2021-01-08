@@ -1,13 +1,17 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'OmegaT-statistics-report'
+description: 'Report translation stats of OmegaT team project'
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
-    required: true
-    default: '1000'
+  token:
+    description: "GitHub Secret Token; if not given the check result is not attached to the commit."
+    required: false
+    default: ""
+  min-coverage:
+    description: "Minimum percentage (between 0.0 and 100.0) required to mark the check successful."
+    required: false
+    default: "0.0"
 outputs:
-  time: # output will be available to future steps
-    description: 'The message to output'
+  coverage:
+    description: "Coverage percentage"
 runs:
   using: 'node12'
   main: 'dist/index.js'
