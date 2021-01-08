@@ -7,7 +7,7 @@ When specified a Github token, the action also add a comment to the commit.
 ## Usage
 
 ```yaml
-uses: miurahr/omegat-stats-action@v1
+uses: miurahr/omegat-statistics-report@v1.0.1
 with:
   token: ${{ secrets.GITHUB_TOKEN }}
   min-coverage: 70.0
