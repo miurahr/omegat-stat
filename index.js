@@ -30,8 +30,8 @@ async function run() {
         stats.sourceWOD = parse(data, 6);
         stats.remainWOD = parse(data, 7);
         let progress = stats.sourceWOD - stats.remainWOD
-        stats.coverage = (100.0 * progress / stats.sourceWOD).toFixed(2)
-        stats.summary = ` - translated ${progress} of ${stats.sourceWOD}(${stats.coverage}%)`;
+        stats.coverage = 100.0 * progress / stats.sourceWOD
+        stats.summary = ` - translated ${progress} of ${stats.sourceWOD}(${stats.coverage.toFixed(2)}%)`;
         stats.detail = data.split("\n\n")[1];
         core.info(stats.summary);
         core.setOutput('coverage', stats.coverage.toString());
@@ -56,7 +56,7 @@ async function run() {
             status: "completed",
             conclusion: conclusion,
             output: {
-                title: `${stats.coverage.toFixed(1)}% coverage.`,
+                title: `${stats.coverage.toFixed(0)}% coverage.`,
                 summary: stats.summary + `, min-coverage: ${minCoverage}%`,
                 text: stats.detail,
             },
