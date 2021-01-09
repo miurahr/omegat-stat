@@ -14,8 +14,30 @@ const minCoverage = parseFloat(core.getInput("min-Coverage") || "0.0");
 
 const statsfile = "omegat/project_stats.txt";
 
-function parse(data, line) {
-    return parseInt(data.split("\n")[line].split("\t")[1]);
+function retrieve(data, line, col) {
+    return data.split("\n")[line].split("\t")[col];
+}
+
+function parse(data, line, col) {
+    return parseInt(retrieve(data, line, col));
+}
+
+function makeRecord(data, line) {
+    let result = "";
+    for (let i = 1; i < 6; i++) {
+        result += "| " + retrieve(data, line, i) + " ";
+    }
+    return result;
+}
+
+async function genDetail(data) {
+    let result = "|  | Segments | Words | Characters(w/o spaces) | Characters(w/ spaces) | #Files |\n";
+    result += "| :-- | --: | --: | --: | --: | --: |\n";
+    result += "| Total " + makeRecord(data, 1) + "|\n";
+    result += "| Remaining " + makeRecord(data, 2) + "|\n";
+    result += "| Unique " + makeRecord(data, 3) + "|\n";
+    result += "| Unique remaining " + makeRecord(data, 4) + "|\n";
+    return result;
 }
 
 async function run() {
@@ -32,14 +54,14 @@ async function run() {
 
     try {
         data = fs.readFileSync(statsfile, 'utf8').toString();
-        stats.source = parse(data,4);
-        stats.remain = parse(data, 5);
-        stats.sourceWOD = parse(data, 6);
-        stats.remainWOD = parse(data, 7);
+        stats.source = parse(data,4, 1);
+        stats.remain = parse(data, 5, 1);
+        stats.sourceWOD = parse(data, 6, 1);
+        stats.remainWOD = parse(data, 7, 1);
         let progress = stats.sourceWOD - stats.remainWOD
         stats.coverage = 100.0 * progress / stats.sourceWOD
         stats.summary = ` - translated ${progress} of ${stats.sourceWOD}(${stats.coverage.toFixed(2)}%)`;
-        stats.detail = data.split("\n\n")[1];
+        stats.detail = genDetail(data.split("\n\n")[1]);
         core.info(stats.summary);
         core.setOutput('coverage', stats.coverage.toString());
     } catch (error) {
