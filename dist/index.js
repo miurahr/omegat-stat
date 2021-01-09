@@ -30,14 +30,13 @@ function makeRecord(data, line) {
     return result;
 }
 
-async function genDetail(data) {
-    let result = "|  | Segments | Words | Characters(w/o spaces) | Characters(w/ spaces) | #Files |\n";
-    result += "| :-- | --: | --: | --: | --: | --: |\n";
-    result += "| Total " + makeRecord(data, 1) + "|\n";
-    result += "| Remaining " + makeRecord(data, 2) + "|\n";
-    result += "| Unique " + makeRecord(data, 3) + "|\n";
-    result += "| Unique remaining " + makeRecord(data, 4) + "|\n";
-    return result;
+function genDetail(data) {
+    return ["|  | Segments | Words | Characters(w/o spaces) | Characters(w/ spaces) | #Files |\n",
+            "| :-- | --: | --: | --: | --: | --: |\n",
+            "| Total ", makeRecord(data, 1), "|\n",
+            "| Remaining ", makeRecord(data, 2), "|\n",
+            "| Unique ", makeRecord(data, 3), "|\n",
+            "| Unique remaining ", makeRecord(data, 4), "|\n\n"].join().toString();
 }
 
 async function run() {
