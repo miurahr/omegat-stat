@@ -26,10 +26,10 @@ async function run() {
     try {
         data = fs.readFileSync(statsfile, 'utf8').toString();
         statistics.sourceCount = parse(data,4);
-        statistics.targetCount = parse(data, 5);
+        statistics.remainCount = parse(data, 5);
         statistics.sourceCountWOD = parse(data, 6);
-        statistics.targetCountWOD = parse(data, 7);
-        statistics.coverage = statistics.targetCountWOD / statistics.sourceCountWOD * 100
+        statistics.remainCountWOD = parse(data, 7);
+        statistics.coverage = 100 - statistics.remainCountWOD / statistics.sourceCountWOD * 100
         statistics.summary = ` - " translated ${statistics.targetCountWOD} of ${statistics.sourceCountWOD}: total ${statistics.coverage}% w/o duplication.`;
         statistics.detail = data.split("\n\n")[1];
         core.info(statistics.summary);
@@ -53,7 +53,7 @@ async function run() {
             name: "omegat-stats-report",
             head_sha: github.context.payload.head_commit.id,
             status: "completed",
-            conclusion,
+            conclusion: conclusion,
             output: {
                 title: `${statistics.coverage.toFixed(0)}% coverage.`,
                 summary: statistics.summary + `, min-coverage: ${minCoverage}%`,
