@@ -15,21 +15,19 @@ function parse(data, line, col) {
     return parseInt(retrieve(data, line, col));
 }
 
-function makeRecord(data, line) {
-    let result = "";
+function makeRecord(title, data, line) {
+    let result = "| " + title + " ";
     for (let i = 1; i < 6; i++) {
         result += "| " + retrieve(data, line, i) + " ";
     }
-    return result;
+    return (result + "|\n");
 }
 
 function genDetail(data) {
-    return ["|  | Segments | Words | Characters(w/o spaces) | Characters(w/ spaces) | #Files |\n",
-            "| :-- | --: | --: | --: | --: | --: |\n",
-            "| Total ", makeRecord(data, 1), "|\n",
-            "| Remaining ", makeRecord(data, 2), "|\n",
-            "| Unique ", makeRecord(data, 3), "|\n",
-            "| Unique remaining ", makeRecord(data, 4), "|\n\n"].join().toString();
+    return "|  | Segments | Words | Characters(w/o spaces) | Characters(w/ spaces) | #Files |\n" +
+           "| :-- | --: | --: | --: | --: | --: |\n" +
+           makeRecord("Total", data, 1) + makeRecord("Remaining", data, 2) +
+           makeRecord("Unique", data, 3) + makeRecord("Unique remaining", data, 4);
 }
 
 async function run() {
