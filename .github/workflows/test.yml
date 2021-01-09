@@ -1,0 +1,13 @@
+
+on: [push]
+
+jobs:
+  omegat-check-action:
+    runs-on: ubuntu-latest
+    name: Run checks
+    steps:
+      - uses: actions/checkout@v2
+      - uses: miurahr/omegat-stat@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage: 30.0
