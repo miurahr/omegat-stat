@@ -1,5 +1,9 @@
+name: CI test for github actions
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   omegat-check-action:
@@ -7,7 +11,7 @@ jobs:
     name: Run checks
     steps:
       - uses: actions/checkout@v2
-      - uses: miurahr/omegat-stat@v1
+      - uses: miurahr/omegat-stat@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage: 30.0
