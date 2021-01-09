@@ -20,8 +20,8 @@ function parse(data, line) {
 
 async function run() {
     let data;
-    const statistics = {
-        sourceCount: 0,
+    const stats = {
+        source: 0,
         targetCount: 0,
         sourceCountWOD: 0,
         targetCountWOD: 0,
@@ -32,15 +32,16 @@ async function run() {
 
     try {
         data = fs.readFileSync(statsfile, 'utf8').toString();
-        statistics.sourceCount = parse(data,4);
-        statistics.remainCount = parse(data, 5);
-        statistics.sourceCountWOD = parse(data, 6);
-        statistics.remainCountWOD = parse(data, 7);
-        statistics.coverage = 100 - statistics.remainCountWOD / statistics.sourceCountWOD * 100
-        statistics.summary = ` - " translated ${statistics.targetCountWOD} of ${statistics.sourceCountWOD}: total ${statistics.coverage}% w/o duplication.`;
-        statistics.detail = data.split("\n\n")[1];
-        core.info(statistics.summary);
-        core.setOutput('coverage', statistics.coverage.toString());
+        stats.source = parse(data,4);
+        stats.remain = parse(data, 5);
+        stats.sourceWOD = parse(data, 6);
+        stats.remainWOD = parse(data, 7);
+        let progress = stats.sourceWOD - stats.remainWOD
+        stats.coverage = (100.0 * progress / stats.sourceWOD).toFixed(2)
+        stats.summary = ` - translated ${progress} of ${stats.sourceWOD}(${stats.coverage}%)`;
+        stats.detail = data.split("\n\n")[1];
+        core.info(stats.summary);
+        core.setOutput('coverage', stats.coverage.toString());
     } catch (error) {
         core.setFailed(error.message);
     }
@@ -49,7 +50,7 @@ async function run() {
         let conclusion;
         if (!minCoverage) {
             conclusion = "neutral";
-        } else if (statistics.coverage >= minCoverage) {
+        } else if (stats.coverage >= minCoverage) {
             conclusion = "success";
         } else {
             conclusion = "failure";
@@ -62,9 +63,9 @@ async function run() {
             status: "completed",
             conclusion: conclusion,
             output: {
-                title: `${statistics.coverage.toFixed(0)}% coverage.`,
-                summary: statistics.summary + `, min-coverage: ${minCoverage}%`,
-                text: statistics.detail,
+                title: `${stats.coverage.toFixed(1)}% coverage.`,
+                summary: stats.summary + `, min-coverage: ${minCoverage}%`,
+                text: stats.detail,
             },
         });
     }
