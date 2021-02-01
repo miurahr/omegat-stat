@@ -40,7 +40,7 @@ function genDetailTotal(data) {
 function genDetailEach(data) {
     let result = "| Filename | Segments | Words | Characters |\n| :-- | --: | --: | --: |\n";
     let detailLines = data.split("\n");
-    for (let i = 3; i < detailLines.size; i++) {
+    for (let i = 3; i < detailLines.length; i++) {
         let item = detailLines[i].split("\t");
         let progressS = (100 * (parseInt(item[3].trim()) - parseInt(item[4].trim())) / parseInt(item[3].trim())).toFixed(0);
         let progressW = (100 * (parseInt(item[7].trim()) - parseInt(item[8].trim())) / parseInt(item[7].trim())).toFixed(0);
