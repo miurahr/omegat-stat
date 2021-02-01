@@ -30,6 +30,21 @@ function genDetailTotal(data) {
            makeRecord("Unique", data, 3) + makeRecord("Unique remaining", data, 4);
 }
 
+function genDetailEach(data) {
+    let result = "| Filename | Segments | Words | Characters |\n| :-- | --: | --: | --: |\n";
+    let detailLines = data.split("\n");
+    for (let i = 3; i < detailLines.size; i++) {
+        let item = detailLines[i].split("\t");
+        let progressS = (100 * (parseInt(item[3].trim()) - parseInt(item[4].trim())) / parseInt(item[3].trim())).toFixed(0);
+        let progressW = (100 * (parseInt(item[7].trim()) - parseInt(item[8].trim())) / parseInt(item[7].trim())).toFixed(0);
+        let progressC = (100 * (parseInt(item[11].trim()) - parseInt(item[12].trim())) / parseInt(item[11].trim())).toFixed(0);
+        result += `| ${item[0].trim()} | ![${progressS}%](https://progress-bar.azurewebsites.net/${progressS}/) |`;
+        result += ` ![${progressW}%](https://progress-bar.azurewebsites.net/${progressW}/) |`;
+        result += ` ![${progressC}%](https://progress-bar.azurewebsites.net/${progressC}/) |\n`;
+    }
+    return result;
+}
+
 async function run() {
     let data;
     const stats = {
@@ -53,12 +68,7 @@ async function run() {
         stats.summary = ` - translated ${progress} of ${stats.sourceWOD}(${stats.coverage.toFixed(2)}%)`;
         stats.detail = genDetailTotal(data.split("\n\n")[1]);
         stats.detail += "\n\n";
-        let lines = data.split("\n\n\n")[1].split("\n\n")[1].split("\n");
-        for (let i = 1; i < lines.size; i++) {
-            let item = lines[i].split("\t");
-            let progress = (100 * (item[3] - item[4]) / item[3]).toFixed(0);
-            stats.detail += `${item[0]}: ![${progress}%](https://progress-bar.azurewebsite.net/${progress}/)\n`;
-        }
+        stats.detail += genDetailEach(data.split("\n\n\n")[1]);
         core.info(stats.summary);
         core.setOutput('coverage', stats.coverage.toString());
     } catch (error) {
