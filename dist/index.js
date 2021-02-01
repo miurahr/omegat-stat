@@ -30,7 +30,7 @@ function makeRecord(title, data, line) {
     return (result + "|\n");
 }
 
-function genDetail(data) {
+function genDetailTotal(data) {
     return "|  | Segments | Words | Characters(w/o spaces) | Characters(w/ spaces) | #Files |\n" +
            "| :-- | --: | --: | --: | --: | --: |\n" +
            makeRecord("Total", data, 1) + makeRecord("Remaining", data, 2) +
@@ -58,7 +58,14 @@ async function run() {
         let progress = stats.sourceWOD - stats.remainWOD
         stats.coverage = 100.0 * progress / stats.sourceWOD
         stats.summary = ` - translated ${progress} of ${stats.sourceWOD}(${stats.coverage.toFixed(2)}%)`;
-        stats.detail = genDetail(data.split("\n\n")[1]);
+        stats.detail = genDetailTotal(data.split("\n\n")[1]);
+        stats.detail += "\n\n";
+        let lines = data.split("\n\n\n")[1].split("\n\n")[1].split("\n");
+        for (let i = 1; i < lines.size; i++) {
+            let item = lines[i].split("\t");
+            let progress = (100 * (item[3] - item[4]) / item[3]).toFixed(0);
+            stats.detail += `${item[0]}: ![${progress}%](https://progress-bar.azurewebsite.net/${progress}/)\n`;
+        }
         core.info(stats.summary);
         core.setOutput('coverage', stats.coverage.toString());
     } catch (error) {
