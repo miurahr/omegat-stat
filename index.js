@@ -74,8 +74,10 @@ async function run() {
         stats.coverage = 100.0 * progress / stats.sourceWOD
         stats.summary = ` - translated ${progress} of ${stats.sourceWOD}(${stats.coverage.toFixed(2)}%)`;
         stats.detail = genDetailTotal(data.split("\n\n")[1]);
-        stats.detail += "\n\n";
-        stats.detail += genDetailEach(data.split("\n\n\n")[1]);
+        let detailBars = genDetailEach(data.split("\n\n\n")[1]);
+        if (stats.detail.length + detailBars.length < 65536 - 2) {
+            stats.detail += "\n\n" + detailBars;
+        }
         core.info(stats.summary);
         core.setOutput('coverage', stats.coverage.toString());
     } catch (error) {
