@@ -10,8 +10,8 @@ const github = __nccwpck_require__(438);
 const fs = __nccwpck_require__(747);
 
 const token = core.getInput("token");
-const minCoverage = parseFloat(core.getInput("min-Coverage") || "0.0");
-
+const minCoverage = parseFloat(core.getInput("min-coverage") || "0.0");
+const targetCoverage = parseFloat(core.getInput("target-coverage") || minCoverage)
 const statsfile = "omegat/project_stats.txt";
 
 function retrieve(data, line, col) {
@@ -34,7 +34,7 @@ function genDetailTotal(data) {
     return "|  | Segments | Words | Characters(w/o spaces) | Characters(w/ spaces) | #Files |\n" +
            "| :-- | --: | --: | --: | --: | --: |\n" +
            makeRecord("Total", data, 1) + makeRecord("Remaining", data, 2) +
-           makeRecord("Unique", data, 3) + makeRecord("Unique remaining", data, 4);
+           makeRecord("Unique", data, 3) + makeRecord("Unique remaining", data, 4) + "\n";
 }
 
 function genDetailEach(data) {
@@ -79,10 +79,14 @@ async function run() {
         stats.remainWOD = parse(data, 7, 1);
         let progress = stats.sourceWOD - stats.remainWOD
         stats.coverage = 100.0 * progress / stats.sourceWOD
-        stats.summary = ` - translated ${progress} of ${stats.sourceWOD}(${stats.coverage.toFixed(2)}%)`;
+        stats.summary = ` - ![${stats.coverage.toFixed(0)}%](https://progress-bar.azurewebsites.net/${stats.coverage.toFixed(0)}/) `
+            + ` translated ${progress} of ${stats.sourceWOD}(${stats.coverage.toFixed(2)}%)`
+            + `, min: ${minCoverage}%, target ${targetCoverage}%`;
         stats.detail = genDetailTotal(data.split("\n\n")[1]);
-        stats.detail += "\n\n";
-        stats.detail += genDetailEach(data.split("\n\n\n")[1]);
+        let detailBars = genDetailEach(data.split("\n\n\n")[1]);
+        if (stats.detail.length + detailBars.length < 65535) {
+            stats.detail += detailBars;
+        }
         core.info(stats.summary);
         core.setOutput('coverage', stats.coverage.toString());
     } catch (error) {
@@ -91,12 +95,12 @@ async function run() {
 
     if (token && github.context.payload.head_commit) {
         let conclusion;
-        if (!minCoverage) {
-            conclusion = "neutral";
-        } else if (stats.coverage >= minCoverage) {
+        if (stats.coverage >= targetCoverage) {
             conclusion = "success";
-        } else {
+        } else if (stats.coverage < minCoverage) {
             conclusion = "failure";
+        } else {
+            conclusion = "neutral";
         }
         github.getOctokit(token).checks.create({
             owner: github.context.payload.repository.owner.login,
@@ -107,7 +111,7 @@ async function run() {
             conclusion: conclusion,
             output: {
                 title: `${stats.coverage.toFixed(0)}% coverage.`,
-                summary: stats.summary + `, min-coverage: ${minCoverage}%`,
+                summary: stats.summary,
                 text: stats.detail,
             },
         });

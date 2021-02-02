@@ -10,5 +10,6 @@ When specified a Github token, the action also add a comment to the commit.
 uses: miurahr/omegat-stat@v1
 with:
   token: ${{ secrets.GITHUB_TOKEN }}
-  min-coverage: 70.0
+  min-coverage: 30.0
+  target-coverage: 70.0
 ```
