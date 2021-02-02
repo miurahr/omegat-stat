@@ -49,9 +49,9 @@ function genDetailEach(data) {
             let progressS = (100 * (parseInt(item[3].trim()) - parseInt(item[4].trim())) / parseInt(item[3].trim())).toFixed(0);
             let progressW = (100 * (parseInt(item[7].trim()) - parseInt(item[8].trim())) / parseInt(item[7].trim())).toFixed(0);
             let progressC = (100 * (parseInt(item[11].trim()) - parseInt(item[12].trim())) / parseInt(item[11].trim())).toFixed(0);
-            result += `| ${item[0].trim()} | ![${progressS}%](https://progress-bar.azurewebsites.net/${progressS}/) |`;
-            result += ` ![${progressW}%](https://progress-bar.azurewebsites.net/${progressW}/) |`;
-            result += ` ![${progressC}%](https://progress-bar.azurewebsites.net/${progressC}/) |\n`;
+            result += `| ${item[0].trim()} | ![${progressS}%](https://progress-bar.dev/${progressS}/) |`;
+            result += ` ![${progressW}%](https://progress-bar.dev/${progressW}/) |`;
+            result += ` ![${progressC}%](https://progress-bar.dev/${progressC}/) |\n`;
         }
     } catch(error) {
         core.setFailed(error.message);
@@ -79,7 +79,7 @@ async function run() {
         stats.remainWOD = parse(data, 7, 1);
         let progress = stats.sourceWOD - stats.remainWOD
         stats.coverage = 100.0 * progress / stats.sourceWOD
-        stats.summary = ` - ![${stats.coverage.toFixed(0)}%](https://progress-bar.azurewebsites.net/${stats.coverage.toFixed(0)}/) `
+        stats.summary = ` - ![${stats.coverage.toFixed(0)}%](https://progress-bar.dev/${stats.coverage.toFixed(0)}/) `
             + ` translated ${progress} of ${stats.sourceWOD}(${stats.coverage.toFixed(2)}%)`
             + `, min: ${minCoverage}%, target ${targetCoverage}%`;
         stats.detail = genDetailTotal(data.split("\n\n")[1]);
