@@ -16,7 +16,7 @@ with:
 
 ## Screenshot
 
-![Screenshot](https://raw.githubusercontent.com/miurahr/omegat-stat/main/img/omegat-stat-snapshost-progress-bar.png)
+![Screenshot](https://raw.githubusercontent.com/miurahr/omegat-stat/main/img/omegat-stat-snapshot-progress-bar.png)
 
 ## Full example script
 
