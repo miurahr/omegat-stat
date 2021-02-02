@@ -40,14 +40,21 @@ function genDetailTotal(data) {
 function genDetailEach(data) {
     let result = "| Filename | Segments | Words | Characters |\n| :-- | --: | --: | --: |\n";
     let detailLines = data.split("\n");
-    for (let i = 3; i < detailLines.length; i++) {
-        let item = detailLines[i].split("\t");
-        let progressS = (100 * (parseInt(item[3].trim()) - parseInt(item[4].trim())) / parseInt(item[3].trim())).toFixed(0);
-        let progressW = (100 * (parseInt(item[7].trim()) - parseInt(item[8].trim())) / parseInt(item[7].trim())).toFixed(0);
-        let progressC = (100 * (parseInt(item[11].trim()) - parseInt(item[12].trim())) / parseInt(item[11].trim())).toFixed(0);
-        result += `| ${item[0].trim()} | ![${progressS}%](https://progress-bar.azurewebsites.net/${progressS}/) |`;
-        result += ` ![${progressW}%](https://progress-bar.azurewebsites.net/${progressW}/) |`;
-        result += ` ![${progressC}%](https://progress-bar.azurewebsites.net/${progressC}/) |\n`;
+    try {
+        for (let i = 3; i < detailLines.length; i++) {
+            if (detailLines[i].length === 0) {
+                continue;
+            }
+            let item = detailLines[i].split("\t");
+            let progressS = (100 * (parseInt(item[3].trim()) - parseInt(item[4].trim())) / parseInt(item[3].trim())).toFixed(0);
+            let progressW = (100 * (parseInt(item[7].trim()) - parseInt(item[8].trim())) / parseInt(item[7].trim())).toFixed(0);
+            let progressC = (100 * (parseInt(item[11].trim()) - parseInt(item[12].trim())) / parseInt(item[11].trim())).toFixed(0);
+            result += `| ${item[0].trim()} | ![${progressS}%](https://progress-bar.azurewebsites.net/${progressS}/) |`;
+            result += ` ![${progressW}%](https://progress-bar.azurewebsites.net/${progressW}/) |`;
+            result += ` ![${progressC}%](https://progress-bar.azurewebsites.net/${progressC}/) |\n`;
+        }
+    } catch(error) {
+        core.setFailed(error.message);
     }
     return result;
 }
