@@ -1,4 +1,4 @@
-name: Release test for github actions
+name: Run release
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - releases
 
 jobs:
-  omegat-check-action:
+  run-omegat-stat:
     runs-on: ubuntu-latest
     name: Run checks
     steps:
