@@ -1,6 +1,8 @@
 #!/bin/bash
 npm install
 npm install -g @vercel/ncc
-ncc build lib/main.js --license license.txt
-git add action.yml dist/index.js
+git checkout releases
+git merge -m 'merge main into releases' main
+npm run release
+git add action.yml dist/ -f
 git commit -sm 'Prepare release'
