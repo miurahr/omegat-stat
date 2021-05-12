@@ -1,9 +1,8 @@
-name: CI test for github actions
+name: Release test for github actions
 
 on:
   push:
     branches:
-      - main
       - releases
 
 jobs:
