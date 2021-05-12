@@ -1,12 +1,12 @@
-name: CI test for github actions
+name: Run release
 
 on:
   push:
     branches:
-      - main
+      - releases
 
 jobs:
-  omegat-check-action:
+  run-omegat-stat:
     runs-on: ubuntu-latest
     name: Run checks
     steps:
