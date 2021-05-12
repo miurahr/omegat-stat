@@ -16,7 +16,7 @@ jobs:
           node-version: '12.x'
       - name: install dependencies
         run: npm install
-      - name: check format & lint
-        run: npm run format-check && npm run lint
+      - name: lint
+        run: npm run lint
       - name: release script
         run: npm prepare
