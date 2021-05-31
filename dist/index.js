@@ -6265,7 +6265,7 @@ async function run() {
         } else {
             conclusion = "neutral";
         }
-        github.getOctokit(token).checks.create({
+        github.getOctokit(token).rest.checks.create({
             owner: github.context.payload.repository.owner.login,
             repo: github.context.payload.repository.name,
             name: "omegat-stats-report",
