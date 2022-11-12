@@ -9768,7 +9768,7 @@ async function run() {
         core.setFailed(error.message);
     }
 
-    if (token && github.context.payload.head_commit) {
+    if (token) {
         let conclusion;
         if (stats.coverage >= targetCoverage) {
             conclusion = "success";
