@@ -1,11 +1,7 @@
 const core = require('@actions/core');
-const github = require("@actions/github");
+const { Octokit } = require("@octokit/action");
 const fs = require('fs');
 
-const token = core.getInput("token");
-const minCoverage = parseFloat(core.getInput("min-coverage") || "0.0");
-const targetCoverage = parseFloat(core.getInput("target-coverage") || minCoverage)
-const statsfile = "omegat/project_stats.txt";
 
 function retrieve(data, line, col) {
     return data.split("\n")[line].split("\t")[col];
@@ -64,6 +60,10 @@ async function run() {
         coverage: 0,
     };
 
+    const minCoverage = parseFloat(core.getInput("min-coverage") || "0.0");
+    const targetCoverage = parseFloat(core.getInput("target-coverage") || minCoverage)
+    const statsfile = "omegat/project_stats.txt";
+
     try {
         data = fs.readFileSync(statsfile, 'utf8').toString();
         stats.source = parse(data,4, 1);
@@ -80,35 +80,43 @@ async function run() {
         if (stats.detail.length + detailBars.length < 65535) {
             stats.detail += detailBars;
         }
-        core.info(stats.summary);
+        const htmlSummary = `<img src="https://progress-bar.dev/${stats.coverage.toFixed(0)}/"/>`
+            + ` translated ${progress} of ${stats.sourceWOD}(${stats.coverage.toFixed(2)}%)`
+            + `, min: ${minCoverage}%, target ${targetCoverage}%`;
+        core.info(htmlSummary);
         core.setOutput('coverage', stats.coverage.toString());
     } catch (error) {
         core.setFailed(error.message);
     }
 
-    if (token) {
-        let conclusion;
-        if (stats.coverage >= targetCoverage) {
-            conclusion = "success";
-        } else if (stats.coverage < minCoverage) {
-            conclusion = "failure";
-        } else {
-            conclusion = "neutral";
-        }
-        github.getOctokit(token).rest.checks.create({
-            owner: github.context.payload.repository.owner.login,
-            repo: github.context.payload.repository.name,
-            name: "omegat-stats-report",
-            head_sha: github.context.payload.head_commit.id,
-            status: "completed",
-            conclusion: conclusion,
-            output: {
-                title: `${stats.coverage.toFixed(0)}% coverage.`,
-                summary: stats.summary,
-                text: stats.detail,
-            },
-        });
+    let conclusion;
+    if (stats.coverage >= targetCoverage) {
+        conclusion = "success";
+    } else if (stats.coverage < minCoverage) {
+        conclusion = "failure";
+    } else {
+        conclusion = "neutral";
     }
+
+    const octokit = new Octokit();
+    const head_commit = require(process.env.GITHUB_SHA);
+    const eventPayload = require(process.env.GITHUB_EVENT_PATH);
+    const repositoryId = eventPayload.repository.node_id;
+    const loginName = eventPayload.repository.owner.login;
+
+    octokit.checks.create({
+        owner: loginName,
+        repo: repositoryId,
+        head_sha: head_commit, 
+        name: "omegat-stats-report",
+        status: "completed",
+        conclusion: conclusion,
+        output: {
+            title: `${stats.coverage.toFixed(0)}% coverage.`,
+            summary: stats.summary,
+            text: stats.detail,
+        },
+    });
 }
 
 run();
