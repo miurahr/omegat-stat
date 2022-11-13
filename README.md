@@ -7,11 +7,12 @@ When specified a Github token, the action also add a comment to the commit.
 ## Usage
 
 ```yaml
-uses: miurahr/omegat-stat@v1
+uses: miurahr/omegat-stat@v2
 with:
-  token: ${{ secrets.GITHUB_TOKEN }}
   min-coverage: 30.0
   target-coverage: 70.0
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Screenshot
@@ -54,9 +55,10 @@ jobs:
     name: Check translation progress
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v3
         with:
-          java-version: 8
+          java-version: '8'
+          distribution: 'temurin'
       - name: Prepare gradle config
         run: |
           echo "plugins { id 'org.omegat.gradle' version '1.5.9' }" > build.gradle
@@ -69,9 +71,10 @@ jobs:
           arguments: translate
           gradle-version: 7.5.1
       - name: Report coverage
-        uses: miurahr/omegat-stat@v1
+        uses: miurahr/omegat-stat@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage: 50.0
           target-coverage: 80.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
