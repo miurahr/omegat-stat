@@ -61,6 +61,7 @@ async function run() {
 
     const statsfile = "omegat/project_stats.txt";
 
+    core.info('Writing OmegaT stats summary');
     try {
         data = fs.readFileSync(statsfile, 'utf8').toString();
         stats.source = parse(data,4, 1);
@@ -78,7 +79,8 @@ async function run() {
         core.setFailed(error.message);
     }
     core.summary.addHeading(`${stats.coverage.toFixed(0)}% coverage.`, 3);
-    core.summary.addRaw(`<table>${stats.detailTotal}</table><br/><table>${stats.detailEach}</table>`)
+    core.summary.addRaw(`<table>${stats.detailTotal}</table><details><table>${stats.detailEach}</table></details>`)
+    await core.summary.write();
 }
 
 run();
