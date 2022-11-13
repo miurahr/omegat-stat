@@ -11257,7 +11257,7 @@ async function run() {
     }
 
     const octokit = new Octokit();
-    const head_commit = require(process.env.GITHUB_SHA);
+    const head_commit = process.env.GITHUB_SHA;
     const eventPayload = require(process.env.GITHUB_EVENT_PATH);
     const repositoryId = eventPayload.repository.node_id;
     const loginName = eventPayload.repository.owner.login;
