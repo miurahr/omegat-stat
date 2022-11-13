@@ -18,13 +18,13 @@ function makeRecord(title, data, line) {
 }
 
 function genDetailTotal(data) {
-    return "<tr><th></th><th>Segments</th><th>Words</th><th>Characters(w/o spaces)</th></th>Characters(w/ spaces)</th><th>#Files</th></tr>" +
+    return "<tr><th></th><th>Segments</th><th>Words</th><th>Characters(wo spaces)</th><th>Characters(w spaces)</th><th>#Files</th></tr>" +
            makeRecord("Total", data, 1) + makeRecord("Remaining", data, 2) +
            makeRecord("Unique", data, 3) + makeRecord("Unique remaining", data, 4);
 }
 
 function genDetailEach(data) {
-    let result = "<tr><th>Filename</th><th>Segments</th><th>Words</th><th>Characters</th><th></tr>";
+    let result = "<tr><th>Filename</th><th>Segments</th><th>Words</th><th>Characters</th></tr>";
     let detailLines = data.split("\n");
     try {
         for (let i = 3; i < detailLines.length; i++) {
@@ -79,7 +79,7 @@ async function run() {
         core.setFailed(error.message);
     }
     core.summary.addHeading(`${stats.coverage.toFixed(0)}% coverage.`, 3);
-    core.summary.addRaw(`<table>${stats.detailTotal}</table><details><table>${stats.detailEach}</table></details>`)
+    core.summary.addRaw(`<table>${stats.detailTotal}</table><table>${stats.detailEach}</table>`)
     await core.summary.write();
 }
 
