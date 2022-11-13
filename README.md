@@ -2,15 +2,11 @@
 
 This action script check OmegaT project's `omegat/porject-stats.txt` and report it
 as an output variable `coverage` in percent.
-When specified a Github token, the action also add a comment to the commit.
 
 ## Usage
 
 ```yaml
 uses: miurahr/omegat-stat@v2
-with:
-  min-coverage: 30.0
-  target-coverage: 70.0
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -72,9 +68,6 @@ jobs:
           gradle-version: 7.5.1
       - name: Report coverage
         uses: miurahr/omegat-stat@v2
-        with:
-          min-coverage: 50.0
-          target-coverage: 80.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
